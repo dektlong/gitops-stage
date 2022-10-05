@@ -29,7 +29,7 @@ spec:
         carto.run/workload-name: mood-analyzer
     spec:
       containers:
-      - image: dektregistry.azurecr.io/dekt-stage/mood-analyzer-dekt-apps@sha256:6934fbb74e5977aa0148d6385880b1a9f4dd45e0490a4dceec05ac213e5dcef9
+      - image: dektregistry.azurecr.io/dekt-stage/mood-analyzer-dekt-apps@sha256:27fe8208819d836c75a24bfff7e898c649afeccec23b3d503866ddedca376d95
         name: workload
         resources: {}
         securityContext:
