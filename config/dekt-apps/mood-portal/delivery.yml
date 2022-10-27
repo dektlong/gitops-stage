@@ -29,7 +29,7 @@ spec:
           value: http://mood-sensors.run.dekt.io/activate
         - name: SENSORS_MEASURE_API
           value: http://mood-sensors.run.dekt.io/measure
-        image: registry.dekt.io/dekt-dev/mood-portal-dekt-apps@sha256:d182fd13c6b42f82ba17967eadf4d8eef3e9761c25bf87aca818d7794d31d890
+        image: registry.dekt.io/dekt-stage/mood-portal-dekt-apps@sha256:d182fd13c6b42f82ba17967eadf4d8eef3e9761c25bf87aca818d7794d31d890
         name: workload
         resources: {}
         securityContext:
