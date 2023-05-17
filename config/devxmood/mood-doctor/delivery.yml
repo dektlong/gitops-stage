@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mood-doctor
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
+    kapp.k14s.io/change-rule: upsert after upserting servicebinding.io/ServiceBindings
+  labels:
+    app.kubernetes.io/part-of: mood-doctor
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: worker
+    app.kubernetes.io/component: run
+    carto.run/workload-name: mood-doctor
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: run
+      app.kubernetes.io/part-of: mood-doctor
+      apps.tanzu.vmware.com/has-tests: "true"
+      apps.tanzu.vmware.com/workload-type: worker
+      carto.run/workload-name: mood-doctor
+  template:
+    metadata:
+      annotations:
+        conventions.carto.run/applied-conventions: |-
+          appliveview-sample/app-live-view-appflavour-check
+          spring-boot-convention/auto-configure-actuators-check
+          spring-boot-convention/app-live-view-appflavour-check
+        developer.conventions/target-containers: workload
+      labels:
+        app.kubernetes.io/component: run
+        app.kubernetes.io/part-of: mood-doctor
+        apps.tanzu.vmware.com/has-tests: "true"
+        apps.tanzu.vmware.com/workload-type: worker
+        carto.run/workload-name: mood-doctor
+    spec:
+      containers:
+      - image: dektregistry.azurecr.io/dekt-system/workloads/mood-doctor-devxmood@sha256:0c41dd692a0d738b0500a98bedb898edacec1f6833dcc3e9844e5f6c24618a06
+        name: workload
+        resources: {}
+        securityContext:
+          runAsUser: 1000
+      serviceAccountName: default
+
