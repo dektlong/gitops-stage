@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mood-painter
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
+    kapp.k14s.io/change-rule: upsert after upserting servicebinding.io/ServiceBindings
+  labels:
+    app.kubernetes.io/part-of: mood-painter
+    apps.tanzu.vmware.com/workload-type: server
+    app.kubernetes.io/component: run
+    carto.run/workload-name: mood-painter
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: run
+      app.kubernetes.io/part-of: mood-painter
+      apps.tanzu.vmware.com/workload-type: server
+      carto.run/workload-name: mood-painter
+  template:
+    metadata:
+      annotations:
+        conventions.carto.run/applied-conventions: |-
+          appliveview-sample/app-live-view-appflavour-check
+          spring-boot-convention/auto-configure-actuators-check
+          spring-boot-convention/app-live-view-appflavour-check
+        developer.conventions/target-containers: workload
+      labels:
+        app.kubernetes.io/component: run
+        app.kubernetes.io/part-of: mood-painter
+        apps.tanzu.vmware.com/workload-type: server
+        carto.run/workload-name: mood-painter
+    spec:
+      containers:
+      - image: dektregistry.azurecr.io/isvs/img-processor@sha256:cbf6fe5c6f569566e2e6ddfcf3237426d52b6b8165efba2c95ba89c77e0518ea
+        name: workload
+        resources: {}
+        securityContext:
+          runAsUser: 1000
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mood-painter
+  labels:
+    app.kubernetes.io/part-of: mood-painter
+    apps.tanzu.vmware.com/workload-type: server
+    app.kubernetes.io/component: run
+    carto.run/workload-name: mood-painter
+spec:
+  selector:
+    app.kubernetes.io/component: run
+    app.kubernetes.io/part-of: mood-painter
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: mood-painter
+  ports:
+  - targetPort: 8080
+    port: 8080
+    name: http
+
