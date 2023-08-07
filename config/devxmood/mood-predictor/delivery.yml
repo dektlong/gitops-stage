@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mood-predictor
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
+    kapp.k14s.io/change-rule: upsert after upserting servicebinding.io/ServiceBindings
+  labels:
+    app.kubernetes.io/part-of: mood-predictor
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: worker
+    app.kubernetes.io/component: run
+    carto.run/workload-name: mood-predictor
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: run
+      app.kubernetes.io/part-of: mood-predictor
+      apps.tanzu.vmware.com/auto-configure-actuators: "false"
+      apps.tanzu.vmware.com/has-tests: "true"
+      apps.tanzu.vmware.com/workload-type: worker
+      carto.run/workload-name: mood-predictor
+      conventions.carto.run/framework: spring-boot
+      tanzu.app.live.view: "true"
+      tanzu.app.live.view.application.actuator.path: actuator
+      tanzu.app.live.view.application.actuator.port: "8080"
+      tanzu.app.live.view.application.flavours: spring-boot
+      tanzu.app.live.view.application.name: mood-predictor
+  template:
+    metadata:
+      annotations:
+        boot.spring.io/version: 3.0.6
+        conventions.carto.run/applied-conventions: |-
+          appliveview-sample/app-live-view-appflavour-check
+          spring-boot-convention/auto-configure-actuators-check
+          spring-boot-convention/spring-boot
+          spring-boot-convention/spring-boot-web
+          spring-boot-convention/spring-boot-actuator
+          spring-boot-convention/spring-boot-actuator-probes
+          spring-boot-convention/app-live-view-appflavour-check
+          spring-boot-convention/app-live-view-connector-boot
+          spring-boot-convention/app-live-view-appflavours-boot
+        developer.conventions/target-containers: workload
+      labels:
+        app.kubernetes.io/component: run
+        app.kubernetes.io/part-of: mood-predictor
+        apps.tanzu.vmware.com/auto-configure-actuators: "false"
+        apps.tanzu.vmware.com/has-tests: "true"
+        apps.tanzu.vmware.com/workload-type: worker
+        carto.run/workload-name: mood-predictor
+        conventions.carto.run/framework: spring-boot
+        tanzu.app.live.view: "true"
+        tanzu.app.live.view.application.actuator.path: actuator
+        tanzu.app.live.view.application.actuator.port: "8080"
+        tanzu.app.live.view.application.flavours: spring-boot
+        tanzu.app.live.view.application.name: mood-predictor
+    spec:
+      containers:
+      - env:
+        - name: JAVA_TOOL_OPTIONS
+          value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.health.probes.enabled="true" -Dserver.port="8080"
+        image: dektregistry.azurecr.io/dekt-system/workloads/mood-predictor-devxmood@sha256:0eb76fd6e234a39087eeed68f55d6a5c7b4e61d01172c1db6e5f30c9b615b0a8
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: 8080
+            scheme: HTTP
+        name: workload
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+            scheme: HTTP
+        resources: {}
+        securityContext:
+          runAsUser: 1000
+      serviceAccountName: default
+
