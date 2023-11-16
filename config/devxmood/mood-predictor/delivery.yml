@@ -60,7 +60,7 @@ spec:
       - env:
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.health.probes.enabled="true" -Dserver.port="8080"
-        image: dektregistry.azurecr.io/dekt-system/workloads/mood-predictor-devxmood@sha256:e88a24b096293050bfe54bbe01627685d02e41e6f57b0386e52045abeaef19d9
+        image: dektregistry.azurecr.io/dekt-system/workloads/mood-predictor-devxmood@sha256:3e45d3e719317e5a54b90bcf56b2a06d26fc2d6d9fa2bc2a3c9366bbc56bd86b
         livenessProbe:
           httpGet:
             path: /livez
